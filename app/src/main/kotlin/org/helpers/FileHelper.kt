@@ -2,22 +2,21 @@ package org.helpers
 
 import java.io.File
 
-object FileHelper {
+object FileHelper : LoggerAware() {
     fun getString(filePath: String) : String{
-        val file = object {}.javaClass.getResourceAsStream(filePath)
+        log.info("opening file in resources: ${filePath}")
+        val file = File("src/main/resources/" + filePath)
     
-        if(file == null){
-            println("DEU RUIM NO FILE")
-            return ""
+        if(!file.exists()){
+            log.error("BROKEN FILE")
+            System.exit(1)
         }
     
         var array = String()
 
-        file.bufferedReader().useLines { lines ->
-            lines.forEach{ line ->
-                array += line.trim() + " "
-                array = array.replace(Regex("\\s+"), " ")
-            }
+        file.forEachLine { line ->
+            array += line.trim() + " "
+            array = array.replace(Regex("\\s+"), " ")
         }
         return array.trim()
     }
@@ -40,7 +39,7 @@ object FileHelper {
 
     fun getLines(filePath: String, column1: MutableList<String>, column2: MutableList<String>){
         var fileString = getString(filePath)
-        println("FileHelper.getLines Nao implementado exit!!!")
+        log.warn("FileHelper.getLines Nao implementado exit!!!")
         System.exit(1)
     }
 }

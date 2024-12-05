@@ -4,18 +4,25 @@
 package org
 
 import org.days.*
+import org.helpers.*
 
-fun main() {
-    while(true){
-        println("---------------select a day---------------")
-        val puzzleNumber = readLine()
+fun main(){
+    AdventOfCode()
+}
 
-        when(puzzleNumber){
-            "1" -> day1()
-            "2" -> day2()
-            "q" -> break
-            else -> println("Puzzle ainda nao implementado")
+class AdventOfCode() : LoggerAware(){
+    init {
+        while(true){
+            log.info("--------------------select a day--------------------\n")
+            val puzzleNumber = readLine()
+
+            when(puzzleNumber){
+                "1" -> Day1()
+                "2" -> Day2()
+                "q" -> break
+                else -> log.warn("Puzzle ainda nao implementado")
+            }
         }
+        System.exit(0)
     }
-    System.exit(0)
 }
