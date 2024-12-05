@@ -5,7 +5,7 @@ import org.helpers.*
 class Day2 : LoggerAware(){
     init {
         log.info("#################### Day 2 ####################")
-        var (column1, column2) = FileHelper.getColums("inputPuzzle2.txt")
+        var (column1, column2) = FileHelper.getArrayOfColumns("inputPuzzle1.txt", 2)
     
         column1 = column1.sorted()
         column2 = column2.sorted()

@@ -3,7 +3,7 @@ package org.helpers
 import java.io.File
 
 object FileHelper : LoggerAware() {
-    fun getString(filePath: String) : String{
+    fun getFile(filePath: String) : File {
         log.info("opening file in resources: ${filePath}")
         val file = File("src/main/resources/" + filePath)
     
@@ -11,35 +11,57 @@ object FileHelper : LoggerAware() {
             log.error("BROKEN FILE")
             System.exit(1)
         }
-    
+        return file
+    }
+
+    fun getString(filePath: String) : String{
         var array = String()
 
-        file.forEachLine { line ->
+        getFile(filePath).forEachLine { line ->
             array += line.trim() + " "
             array = array.replace(Regex("\\s+"), " ")
         }
         return array.trim()
     }
 
-    fun getColums(filePath: String) : Pair<List<String>, List<String>> {
-        var fileString = getString(filePath)
-        val column1 = mutableListOf<String>()
-        var column2 = mutableListOf<String>()
-
-        val list = fileString.split(' ')
-        for (i in list.indices){
-            if(i % 2 == 0){
-                column1.add(list[i])
-                continue
-            }
-            column2.add(list[i])
-        }
-        return Pair(column1, column2)
+    fun getLines(filePath: String) : List<String>{
+        return getFile(filePath).readLines()
     }
 
-    fun getLines(filePath: String, column1: MutableList<String>, column2: MutableList<String>){
-        var fileString = getString(filePath)
-        log.warn("FileHelper.getLines Nao implementado exit!!!")
-        System.exit(1)
+    fun getArrayOfLines(filePath: String, amountOfColumns: Int) : List<List<String>>{
+        val result = MutableList(amountOfColumns) { mutableListOf<String>() }
+
+        getLines(filePath).forEach { line ->
+            val words = line.split("\\s+".toRegex())
+            for (i in words.indices){
+                if (i < amountOfColumns) {
+                    result[i].add(words[i])
+                }
+            }
+        }
+        return result
+    }
+
+    fun getColumns(filePath: String, amountOfColumns: Int): List<String> {    
+        return getArrayOfLines(filePath, amountOfColumns).map{ column -> 
+            column.joinToString(" ")
+        }
+    }
+
+    fun getArrayOfColumns(filePath: String, amountOfColumns: Int): List<List<String>> {
+        val result = MutableList(amountOfColumns) { mutableListOf<String>() }
+    
+        getLines(filePath).forEach { line ->
+            val words = line.split("\\s+".toRegex())
+            for (i in words.indices) {
+                if (i < amountOfColumns) {
+                    result[i].add(words[i])
+                }
+            }
+            for (i in words.size until amountOfColumns) {
+                result[i].add("")
+            }
+        }
+        return result
     }
 }
